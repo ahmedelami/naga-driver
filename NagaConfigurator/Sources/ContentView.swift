@@ -1,10 +1,14 @@
 import SwiftUI
 import Carbon
+import AppKit
+import UniformTypeIdentifiers
 
 struct ContentView: View {
     @ObservedObject var manager: ConfigManager
     @State private var selectedButton: String?
     @State private var showResetConfirm = false 
+    @State private var draggingButton: String?
+    @State private var swappedButtons: Set<Int> = [] // Track swapped indices for animation
     
     let columns = [
         GridItem(.flexible()), 
@@ -12,8 +16,22 @@ struct ContentView: View {
         GridItem(.flexible())
     ]
     
+    func triggerSwapFlash(idx1: Int, idx2: Int) {
+        withAnimation(.easeIn(duration: 0.2)) {
+            swappedButtons.insert(idx1)
+            swappedButtons.insert(idx2)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            withAnimation(.easeOut(duration: 0.5)) {
+                swappedButtons.remove(idx1)
+                swappedButtons.remove(idx2)
+            }
+        }
+    }
+    
     var body: some View {
         HStack(spacing: 0) {
+            // Left: Button Grid
             VStack {
                 Text("Naga V2 HS")
                     .font(.headline)
@@ -35,39 +53,34 @@ struct ContentView: View {
                 
                 LazyVGrid(columns: columns, spacing: 15) {
                     ForEach(1...12, id: \.self) { i in
-                        Button(action: { selectedButton = String(i) }) {
-                            VStack {
-                                Text("\(i)")
-                                    .font(.title)
-                                    .frame(width: 40, height: 25)
-                                
-                                if let actions = manager.mappings[String(i)], !actions.isEmpty {
-                                    Text(summary(for: actions))
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(1)
-                                } else {
-                                    Text("Unmapped")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
+                        ButtonCard(
+                            index: i,
+                            isSelected: selectedButton == String(i),
+                            isSwapped: swappedButtons.contains(i), // Pass state
+                            actions: manager.mappings[String(i)] ?? [],
+                            onSelect: { selectedButton = String(i) },
+                            onDragStart: { draggingButton = String(i) },
+                            onDrop: { source in
+                                if source != String(i) {
+                                    // Perform Swap
+                                    manager.swapMappings(from: source, to: String(i))
+                                    // Trigger Animation
+                                    if let srcInt = Int(source) {
+                                        triggerSwapFlash(idx1: srcInt, idx2: i)
+                                    }
                                 }
-                            }
-                            .frame(width: 70, height: 60)
-                            .background(selectedButton == String(i) ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.1))
-                            .cornerRadius(8)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(selectedButton == String(i) ? Color.accentColor : Color.clear, lineWidth: 2)
-                            )
-                        }
-                        .buttonStyle(.plain)
+                            },
+                            draggingButton: draggingButton
+                        )
                     }
                 }
                 .padding()
+                
                 Spacer()
             }
             .frame(width: 280)
             
+            // ... (Right side remains same) ...            
             VStack {
                 if let btn = selectedButton {
                     EditorView(buttonIndex: btn, manager: manager)
@@ -79,16 +92,93 @@ struct ContentView: View {
             .frame(minWidth: 400)
         }
     }
+}
+
+struct ButtonCard: View {
+    let index: Int
+    let isSelected: Bool
+    let isSwapped: Bool // New Prop
+    let actions: [Mapping]
+    let onSelect: () -> Void
+    let onDragStart: () -> Void
+    let onDrop: (String) -> Void
+    let draggingButton: String?
+    
+    var body: some View {
+        ZStack {
+            VStack {
+                Text("\(index)")
+                    .font(.title)
+                    .frame(width: 40, height: 25)
+                
+                if !actions.isEmpty {
+                    Text(summary(for: actions))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                } else {
+                    Text("Unmapped")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .frame(width: 70, height: 60)
+            .background(
+                isSwapped ? Color.green.opacity(0.3) : // Flash Green
+                isSelected ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.1)
+            )
+            .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(
+                        isSwapped ? Color.green : // Flash Green Border
+                        isSelected ? Color.accentColor : Color.clear, 
+                        lineWidth: 2
+                    )
+            )
+            // ... (Rest remains same) ...
+            .onDrag {
+                onDragStart()
+                return NSItemProvider(object: String(index) as NSString)
+            }
+            .onDrop(of: [.text], isTargeted: nil) { providers in
+                if let provider = providers.first {
+                    provider.loadObject(ofClass: NSString.self) { (str, error) in
+                        if let source = str as? String {
+                            DispatchQueue.main.async {
+                                onDrop(source)
+                            }
+                        }
+                    }
+                    return true
+                }
+                return false
+            }
+            .onTapGesture {
+                onSelect()
+            }
+        }
+    }
     
     func summary(for actions: [Mapping]) -> String {
-        if actions.isEmpty { return "Unmapped" }
         let first = actions[0]
         if first.type == "shortcut" {
-            let mods = first.modifiers?.map { $0 == "cmd" ? "⌘" : $0 }.joined() ?? ""
+            let mods = first.modifiers?.map { formatMod($0) }.joined() ?? ""
             let key = first.key?.uppercased() ?? ""
             return actions.count > 1 ? "\(mods)\(key)..." : "\(mods)\(key)"
         }
         return first.type.capitalized
+    }
+    
+    func formatMod(_ mod: String) -> String {
+        switch mod {
+        case "cmd": return "⌘"
+        case "shift": return "⇧"
+        case "opt": return "⌥"
+        case "ctrl": return "⌃"
+        case "fn": return "Fn"
+        default: return ""
+        }
     }
 }
 
@@ -230,8 +320,6 @@ struct EditorView: View {
         var current = manager.mappings[buttonIndex] ?? []
         current.append(Mapping(type: "shortcut", key: key, modifiers: modifiers, path: nil, args: nil, duration: nil))
         manager.mappings[buttonIndex] = current
-        
-        // Auto Save immediately for buttons
         manager.save()
     }
     
@@ -303,14 +391,12 @@ struct EditorView: View {
     }
     
     func handleFlags(_ event: NSEvent) {
-        if event.keyCode == 63 || event.keyCode == 179 || event.modifierFlags.contains(.function) {
-            // Only record on Press (if flags contain function)
-            if event.modifierFlags.contains(.function) {
-                 let modifiers = getModifiers(event.modifierFlags.subtracting(.function))
+        // Check for Fn key (Keycode 63 OR Function Flag)
+        if event.keyCode == 63 || event.keyCode == 179 || event.modifierFlags.contains(NSEvent.ModifierFlags.function) {
+            if event.modifierFlags.contains(NSEvent.ModifierFlags.function) {
+                 let modifiers = getModifiers(event.modifierFlags.subtracting(NSEvent.ModifierFlags.function))
                  print("Recording Fn")
                  addShortcut(key: "fn", modifiers: modifiers)
-                 // Stop after Fn? Usually Fn is a modifier, but here treating as key.
-                 // Don't stop, maybe they want Fn+F1.
             }
         }
     }
@@ -358,11 +444,11 @@ struct EditorView: View {
     
     func getModifiers(_ flags: NSEvent.ModifierFlags) -> [String] {
         var mods: [String] = []
-        if flags.contains(.command) { mods.append("cmd") }
-        if flags.contains(.shift) { mods.append("shift") }
-        if flags.contains(.option) { mods.append("opt") }
-        if flags.contains(.control) { mods.append("ctrl") }
-        if flags.contains(.function) { mods.append("fn") }
+        if flags.contains(NSEvent.ModifierFlags.command) { mods.append("cmd") }
+        if flags.contains(NSEvent.ModifierFlags.shift) { mods.append("shift") }
+        if flags.contains(NSEvent.ModifierFlags.option) { mods.append("opt") }
+        if flags.contains(NSEvent.ModifierFlags.control) { mods.append("ctrl") }
+        if flags.contains(NSEvent.ModifierFlags.function) { mods.append("fn") }
         return mods
     }
 }

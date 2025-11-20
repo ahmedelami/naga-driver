@@ -32,6 +32,7 @@ class ConfigManager: ObservableObject {
     }
     
     func save() {
+        // ... existing save logic ...
         // 1. Save UI State
         if let data = try? JSONEncoder().encode(mappings) {
             UserDefaults.standard.set(data, forKey: "NagaMappings")
@@ -42,6 +43,17 @@ class ConfigManager: ObservableObject {
         
         // 3. Inject into Karabiner Config
         updateKarabinerConfig(with: newRules)
+    }
+    
+    func swapMappings(from btnA: String, to btnB: String) {
+        let actionsA = mappings[btnA]
+        let actionsB = mappings[btnB]
+        
+        mappings[btnA] = actionsB
+        mappings[btnB] = actionsA
+        
+        save()
+        print("🔄 Swapped Button \(btnA) with Button \(btnB)")
     }
     
     private func updateKarabinerConfig(with newRules: [KarabinerRule]) {
