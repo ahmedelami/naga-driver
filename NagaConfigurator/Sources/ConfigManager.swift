@@ -137,8 +137,11 @@ class ConfigManager: ObservableObject {
     
     private func mapModifier(_ mod: String) -> String {
         switch mod {
-        case "cmd": return "left_command"; case "opt": return "left_option";
-        case "ctrl": return "left_control"; case "shift": return "left_shift";
+        case "cmd": return "left_command"
+        case "opt": return "left_option"
+        case "ctrl": return "left_control"
+        case "shift": return "left_shift"
+        case "fn": return "fn"
         default: return "left_command"
         }
     }

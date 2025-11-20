@@ -1,21 +1,28 @@
-# Razer Naga V2 HS Configurator (macOS)
+# Razer Naga V2 HS Configurator (Karabiner Edition)
 
-A lightweight, native macOS app to configure the **Razer Naga V2 HyperSpeed** mouse using **Karabiner-Elements**.
+A native macOS app to configure the **Razer Naga V2 HyperSpeed** mouse using **Karabiner-Elements** as the backend engine.
 
-It allows you to map the 12 side buttons to keyboard shortcuts or macros with a visual GUI.
+This tool generates complex modification rules for Karabiner, allowing you to map the 12 side buttons to keyboard shortcuts, macros, and special keys (like Fn/Globe) with a visual GUI.
+
+## ✨ Features
+
+*   **Visual Grid:** Map buttons 1-12 easily.
+*   **Macro Recording:** Record complex shortcuts (e.g., `Cmd + Shift + Left`).
+*   **Fn / Globe Support:** Map buttons to the Function key (useful for Dictation/Emoji).
+*   **Auto-Save:** Changes apply instantly to Karabiner-Elements.
+*   **Conflict Resolution:** Automatically handles the default "123" output of the Naga hardware.
 
 ## ⚡️ Prerequisites
 
 1.  **Install Karabiner-Elements**: [Download Here](https://karabiner-elements.pqrs.org/).
-2.  **Open Karabiner-Elements**:
-    *   Go to **Devices**.
-    *   Find "Razer Naga V2 HS".
+2.  **Configure Karabiner**:
+    *   Go to **Devices** -> Find "Razer Naga V2 HS".
     *   ✅ Toggle **"Modify events"** ON.
     *   ❌ Ensure **"Treat as built-in keyboard"** is OFF.
     *   ❌ Ensure **"Disable built-in keyboard..."** is OFF.
-3.  **Clean Up**:
+3.  **Clean Up Simple Mods**:
     *   Go to **Simple Modifications**.
-    *   Ensure there are **NO** mappings for the Naga (e.g., `1 -> b`). Delete them if they exist.
+    *   Ensure there are **NO** mappings for the Naga (e.g., `1 -> b`). Delete them if they exist, as they override macros.
 
 ## 🚀 Installation
 
@@ -25,28 +32,26 @@ It allows you to map the 12 side buttons to keyboard shortcuts or macros with a 
     ./package_app.sh
     ```
 3.  Move `Naga.app` to your Applications folder.
-4.  Open it!
+4.  Open it! (It lives in your Menu Bar).
 
 ## 🛠️ Usage
 
 1.  Click the **Mouse Icon 🖱️** in your Menu Bar -> **Preferences**.
 2.  Select a button (1-12).
-3.  Click **Record Macro**.
-4.  Press your desired shortcut (e.g., `Cmd + C`).
-5.  Press **Esc** or **Stop Recording**.
-6.  **Done!** The rule is instantly applied to Karabiner.
+3.  **Record Macro:** Click the button and press keys. Press **Esc** to stop.
+4.  **Add Fn:** Click the "Add Fn" button to manually insert the Globe key.
+5.  **Clear:** Wipe a button's settings.
+6.  **Reset All:** Wipe everything.
 
-## ⚙️ How it Works
+## ⚙️ Architecture
 
-*   The app acts as a GUI for Karabiner's `complex_modifications`.
-*   It reads/writes directly to `~/.config/karabiner/karabiner.json`.
-*   It injects a rule named **"Naga Controller Rules"** into your active profile.
-*   No background drivers, no kexts, no seizing devices. Just pure JSON config generation.
+*   **Frontend:** SwiftUI (Native macOS App).
+*   **Backend:** Direct JSON injection into `~/.config/karabiner/karabiner.json`.
+*   **Why:** This approach avoids fighting macOS "Secure Input" and "HID Seizure" issues by leveraging Karabiner's kernel-level virtual driver.
 
 ## 🐛 Troubleshooting
 
 *   **Button types '1' instead of Macro:**
-    *   You likely have a "Simple Modification" in Karabiner overriding the macro. Go to Karabiner -> Simple Modifications and delete it.
-    *   Ensure "Modify events" is ON for the device.
-*   **App doesn't show changes:**
-    *   Restart the app to force a reload of the config state.
+    *   Check "Simple Modifications" in Karabiner and delete any rules for the mouse.
+*   **Fn key not working:**
+    *   Use the "Add Fn" button in the UI if recording the Globe key is inconsistent.

@@ -4,7 +4,7 @@ import Carbon
 struct ContentView: View {
     @ObservedObject var manager: ConfigManager
     @State private var selectedButton: String?
-    @State private var showResetConfirm = false // Confirmation State
+    @State private var showResetConfirm = false 
     
     let columns = [
         GridItem(.flexible()), 
@@ -14,7 +14,6 @@ struct ContentView: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            // Left: Button Grid
             VStack {
                 Text("Naga V2 HS")
                     .font(.headline)
@@ -65,7 +64,6 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-                
                 Spacer()
             }
             .frame(width: 280)
@@ -98,7 +96,7 @@ struct EditorView: View {
     let buttonIndex: String
     @ObservedObject var manager: ConfigManager
     @State private var isRecording = false
-    @State private var showSavedMessage = false // Feedback state
+    @State private var showSavedMessage = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -186,6 +184,23 @@ struct EditorView: View {
                         }
                         .buttonStyle(.plain)
                         
+                        Button(action: { addShortcut(key: "fn", modifiers: []) }) {
+                            HStack {
+                                Image(systemName: "globe")
+                                Text("Add Fn")
+                            }
+                            .frame(width: 100)
+                            .frame(height: 32)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(6)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundColor(.blue)
+                        
                         Button(action: { clearButton() }) {
                             HStack {
                                 Image(systemName: "trash")
@@ -215,6 +230,9 @@ struct EditorView: View {
         var current = manager.mappings[buttonIndex] ?? []
         current.append(Mapping(type: "shortcut", key: key, modifiers: modifiers, path: nil, args: nil, duration: nil))
         manager.mappings[buttonIndex] = current
+        
+        // Auto Save immediately for buttons
+        manager.save()
     }
     
     func deleteAction(at index: Int) {
@@ -248,6 +266,7 @@ struct EditorView: View {
         case "shift": return "⇧"
         case "opt": return "⌥"
         case "ctrl": return "⌃"
+        case "fn": return "Fn"
         default: return ""
         }
     }
@@ -255,16 +274,45 @@ struct EditorView: View {
     // --- Key Monitoring ---
     
     @State private var localMonitor: Any?
-    
+    @State private var globalMonitor: Any?
+
     func startMonitoring() {
-        localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            handleKey(event)
+        localMonitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .flagsChanged]) { event in
+            print("LOCAL: \(event.keyCode)")
+            if event.type == .flagsChanged {
+                handleFlags(event)
+            } else {
+                handleKey(event)
+            }
             return nil 
+        }
+        
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.keyDown, .flagsChanged]) { event in
+            print("GLOBAL: \(event.keyCode)")
+            if event.type == .flagsChanged {
+                handleFlags(event)
+            } else {
+                handleKey(event)
+            }
         }
     }
     
     func stopMonitoring() {
         if let m = localMonitor { NSEvent.removeMonitor(m); localMonitor = nil }
+        if let m = globalMonitor { NSEvent.removeMonitor(m); globalMonitor = nil }
+    }
+    
+    func handleFlags(_ event: NSEvent) {
+        if event.keyCode == 63 || event.keyCode == 179 || event.modifierFlags.contains(.function) {
+            // Only record on Press (if flags contain function)
+            if event.modifierFlags.contains(.function) {
+                 let modifiers = getModifiers(event.modifierFlags.subtracting(.function))
+                 print("Recording Fn")
+                 addShortcut(key: "fn", modifiers: modifiers)
+                 // Stop after Fn? Usually Fn is a modifier, but here treating as key.
+                 // Don't stop, maybe they want Fn+F1.
+            }
+        }
     }
     
     func handleKey(_ event: NSEvent) {
@@ -278,7 +326,6 @@ struct EditorView: View {
         
         if !key.isEmpty {
             addShortcut(key: key, modifiers: modifiers)
-            // Don't save yet! Wait for Esc.
         }
     }
     
@@ -302,6 +349,8 @@ struct EditorView: View {
         case 96: return "f5"; case 97: return "f6"; case 98: return "f7"; case 100: return "f8";
         case 101: return "f9"; case 109: return "f10"; case 103: return "f11"; case 111: return "f12";
         
+        case 179, 63: return "fn";
+        
         case 55, 56, 57, 58, 59, 60, 61, 62, 63: return ""
         default: return "unknown(\(keyCode))"
         }
@@ -313,6 +362,7 @@ struct EditorView: View {
         if flags.contains(.shift) { mods.append("shift") }
         if flags.contains(.option) { mods.append("opt") }
         if flags.contains(.control) { mods.append("ctrl") }
+        if flags.contains(.function) { mods.append("fn") }
         return mods
     }
 }
