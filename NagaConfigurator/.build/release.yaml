@@ -1,0 +1,66 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "NagaConfigurator-arm64-apple-macosx26.0-release.exe": ["<NagaConfigurator-arm64-apple-macosx26.0-release.exe>"]
+  "NagaConfigurator-arm64-apple-macosx26.0-release.module": ["<NagaConfigurator-arm64-apple-macosx26.0-release.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "main": ["<NagaConfigurator-arm64-apple-macosx26.0-release.exe>","<NagaConfigurator-arm64-apple-macosx26.0-release.module>"]
+  "test": ["<NagaConfigurator-arm64-apple-macosx26.0-release.exe>","<NagaConfigurator-arm64-apple-macosx26.0-release.module>"]
+default: "main"
+nodes:
+  "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/App.swift","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/ConfigManager.swift","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/ContentView.swift","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/KarabinerModels.swift"]
+    outputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/sources"]
+    description: "Write auxiliary file /Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/sources"
+
+  "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/App.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ConfigManager.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ContentView.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/KarabinerModels.swift.o"]
+    outputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.product/Objects.LinkFileList"
+
+  "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt"
+
+  "<NagaConfigurator-arm64-apple-macosx26.0-release.exe>":
+    tool: phony
+    inputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator"]
+    outputs: ["<NagaConfigurator-arm64-apple-macosx26.0-release.exe>"]
+
+  "<NagaConfigurator-arm64-apple-macosx26.0-release.module>":
+    tool: phony
+    inputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/App.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ConfigManager.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ContentView.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/KarabinerModels.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/Modules/NagaConfigurator.swiftmodule"]
+    outputs: ["<NagaConfigurator-arm64-apple-macosx26.0-release.module>"]
+
+  "C.NagaConfigurator-arm64-apple-macosx26.0-release.exe":
+    tool: shell
+    inputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/App.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ConfigManager.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ContentView.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/KarabinerModels.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.product/Objects.LinkFileList"]
+    outputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator"]
+    description: "Linking ./.build/arm64-apple-macosx/release/NagaConfigurator"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-L","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release","-o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator","-module-name","NagaConfigurator","-Xlinker","-no_warn_duplicate_libraries","-emit-executable","-Xlinker","-dead_strip","-Xlinker","-alias","-Xlinker","_NagaConfigurator_main","-Xlinker","_main","-Xlinker","-rpath","-Xlinker","@loader_path","@/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.product/Objects.LinkFileList","-target","arm64-apple-macosx13.0","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g"]
+
+  "C.NagaConfigurator-arm64-apple-macosx26.0-release.module":
+    tool: shell
+    inputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/App.swift","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/ConfigManager.swift","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/ContentView.swift","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/KarabinerModels.swift","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/sources"]
+    outputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/App.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ConfigManager.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ContentView.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/KarabinerModels.swift.o","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/Modules/NagaConfigurator.swiftmodule"]
+    description: "Compiling Swift Module 'NagaConfigurator' (4 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","NagaConfigurator","-emit-dependencies","-emit-module","-emit-module-path","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/Modules/NagaConfigurator.swiftmodule","-output-file-map","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/output-file-map.json","-whole-module-optimization","-num-threads","10","-c","@/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/sources","-I","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/Modules","-target","arm64-apple-macosx13.0","-whole-module-optimization","-num-threads","10","-serialize-diagnostics","-O","-j10","-DSWIFT_PACKAGE","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/ModuleCache","-parseable-output","-Xfrontend","-entry-point-function-name","-Xfrontend","NagaConfigurator_main","-color-diagnostics","-swift-version","5","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.0.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","nagaconfigurator"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Package.swift","/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

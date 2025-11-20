@@ -1,0 +1,31 @@
+{
+  "": {
+    "dependencies": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/NagaConfigurator.d",
+    "object": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/NagaConfigurator.o",
+    "swift-dependencies": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/master.swiftdeps"
+  },
+  "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/App.swift": {
+    "object": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/App.swift.o",
+    "swiftmodule": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/App~partial.swiftmodule",
+    "swift-dependencies": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/App.swiftdeps",
+    "diagnostics": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/App.dia"
+  },
+  "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/ConfigManager.swift": {
+    "object": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ConfigManager.swift.o",
+    "swiftmodule": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ConfigManager~partial.swiftmodule",
+    "swift-dependencies": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ConfigManager.swiftdeps",
+    "diagnostics": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ConfigManager.dia"
+  },
+  "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/ContentView.swift": {
+    "object": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ContentView.swift.o",
+    "swiftmodule": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ContentView.swiftdeps",
+    "diagnostics": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/ContentView.dia"
+  },
+  "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/Sources/KarabinerModels.swift": {
+    "object": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/KarabinerModels.swift.o",
+    "swiftmodule": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/KarabinerModels~partial.swiftmodule",
+    "swift-dependencies": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/KarabinerModels.swiftdeps",
+    "diagnostics": "/Users/ahmedelamin/repos/debug-razer/NagaConfigurator/.build/arm64-apple-macosx/release/NagaConfigurator.build/KarabinerModels.dia"
+  }
+}
