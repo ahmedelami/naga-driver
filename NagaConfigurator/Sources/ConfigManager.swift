@@ -155,6 +155,7 @@ class ConfigManager: ObservableObject {
         case "cmd", "command": return "left_command"
         case "esc": return "escape"
         case "return", "enter": return "return_or_enter"
+        case "backspace", "delete": return "delete_or_backspace" // FIX HERE
         case "leftbracket", "[": return "open_bracket"
         case "rightbracket", "]": return "close_bracket"
         case "minus", "-": return "hyphen"
